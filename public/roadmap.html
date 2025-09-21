@@ -38,6 +38,8 @@
       display: flex;
       flex-direction: column;
       align-items: center;
+      overflow-x: hidden;
+      position: relative;
     }
     a { text-decoration: none; color: inherit; }
 
@@ -68,18 +70,74 @@
       width: 100%; max-width: 650px; background: var(--card-bg);
       backdrop-filter: blur(10px); padding: 2rem; border-radius: 1rem;
       box-shadow: 0 10px 25px rgba(0,0,0,0.08); margin-bottom: 2rem;
+      position: relative; z-index: 1;
     }
-    label { display: block; margin-bottom: 1.5rem; font-weight: 600; }
-    select, input[type="text"] {
-      width: 100%; padding: 0.9rem; border: 1px solid var(--input-border);
-      border-radius: 0.5rem; background: var(--input-bg); color: var(--text);
+
+    label {
+      position: relative;
+      display: block;
+      margin-bottom: 1.8rem;
+      font-weight: 600;
+      color: var(--text);
     }
+
+    select,
+    input[type="text"] {
+      width: 95%;
+      padding: 1rem 1rem 0.5rem;
+      font-size: 1rem;
+      border: 1px solid var(--input-border);
+      border-radius: 0.5rem;
+      background: var(--input-bg);
+      color: var(--text);
+      transition: all 0.3s ease;
+    }
+
+    select:focus,
+    input[type="text"]:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 10px rgba(164,113,72,0.2);
+      outline: none;
+      transform: scale(1.01);
+    }
+
+    /* Floating label effect */
+    label span {
+      position: absolute;
+      top: 1.1rem;
+      left: 1rem;
+      font-size: 1rem;
+      color: #777;
+      transition: 0.3s ease;
+      pointer-events: none;
+    }
+
+    input:focus + span,
+    input:not(:placeholder-shown) + span,
+    select:focus + span,
+    select:valid + span {
+      top: -0.6rem;
+      left: 0.8rem;
+      font-size: 0.8rem;
+      color: var(--accent);
+      background: #fff;
+      padding: 0 0.4rem;
+      border-radius: 0.2rem;
+    }
+
     button {
-      margin-top: 1rem; padding: 0.9rem 1.8rem; background: var(--accent);
-      color: white; border: none; border-radius: 0.5rem; font-size: 1rem; cursor: pointer;
+      margin-top: 1rem;
+      padding: 0.9rem 1.8rem;
+      background: var(--accent);
+      color: white;
+      border: none;
+      border-radius: 0.5rem;
+      font-size: 1rem;
+      cursor: pointer;
       transition: all 0.3s ease;
     }
     button:hover { background: var(--accent-hover); transform: translateY(-3px) scale(1.03); }
+
     #loading { text-align: center; display: none; margin: 1rem 0; }
     .action-buttons { margin-top: 1rem; display: flex; gap: 1rem; }
     @media (max-width: 640px) { .action-buttons { flex-direction: column; } }
@@ -137,9 +195,31 @@
       from { opacity: 0; transform: translateY(20px); }
       to { opacity: 1; transform: translateY(0); }
     }
+
+    /* Background animated circles */
+    .bg-shape {
+      position: absolute;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(164,113,72,0.25), transparent 70%);
+      animation: float 12s infinite ease-in-out;
+      z-index: 0;
+    }
+    .circle1 { width: 280px; height: 280px; top: -60px; left: -60px; }
+    .circle2 { width: 220px; height: 220px; bottom: 50px; right: -80px; animation-delay: 4s; }
+    .circle3 { width: 180px; height: 180px; top: 40%; left: 70%; animation-delay: 8s; }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      50% { transform: translateY(-20px) rotate(15deg); }
+    }
   </style>
 </head>
 <body>
+
+  <!-- Background shapes -->
+  <div class="bg-shape circle1"></div>
+  <div class="bg-shape circle2"></div>
+  <div class="bg-shape circle3"></div>
 
   <nav>
     <div class="logo"><div class="logo-circle">CP</div> Career Pathfinder</div>
@@ -163,33 +243,41 @@
   <h1>Get Your Career Roadmap</h1>
 
   <form id="roadmapForm">
-    <label>Skill Level
+    <label>
       <select id="skillLevel" name="skillLevel" required>
-        <option value="">Select skill level</option>
+        <option value="" disabled selected hidden></option>
         <option>Beginner</option>
         <option>Intermediate</option>
         <option>Advanced</option>
       </select>
+      <span>Skill Level</span>
     </label>
 
-    <label>Area of Interest
-      <input type="text" id="interest" name="interest" placeholder="e.g., Web Development, AI, Design" required />
+    <label>
+      <input type="text" id="interest" name="interest" placeholder=" " required />
+      <span>Area of Interest</span>
     </label>
 
-    <label>Education Level
+    <label>
       <select id="education" name="education" required>
-        <option value="">Select education level</option>
+        <option value="" disabled selected hidden></option>
         <option>10th</option>
         <option>12th</option>
         <option>Undergraduate</option>
         <option>Postgraduate</option>
       </select>
+      <span>Education Level</span>
+    </label>
+
+    <label>
+      <input type="text" id="about" name="about" placeholder=" " required />
+      <span>Tell About Yourself</span>
     </label>
 
     <button type="submit">Generate Roadmap</button>
   </form>
-
-  <div id="loading">⏳ Generating roadmap...</div>
+  
+  <div id="loading" style="display: none;">⏳ Generating roadmap...</div>
 
   <div id="result">
     <h2>Career Roadmap</h2>
@@ -197,11 +285,10 @@
     <p id="roadmapText" style="display:none;"></p>
     <div class="action-buttons">
       <button id="copyBtn">📋 Copy</button>
-      <button id="downloadBtn">⬇️ Download PDF</button>
+      <button id="downloadBtn">⬇ Download PDF</button>
     </div>
   </div>
 
-  <!-- jsPDF library -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
   <script>
@@ -224,8 +311,9 @@
       const skill = document.getElementById("skillLevel").value;
       const interest = document.getElementById("interest").value;
       const education = document.getElementById("education").value;
+      const about = document.getElementById("about").value;
 
-      const prompt = `Create a detailed career roadmap for a ${skill} level student interested in ${interest} who is currently at ${education} level. Include step-by-step milestones, skills to learn, and 2-3 project ideas at each stage.`;
+      const prompt = `Create a detailed career roadmap for a ${skill} level student interested in ${interest} who is currently at ${education} level. Here's some additional information about me: ${about}. Include step-by-step milestones, skills to learn, and 2-3 project ideas at each stage.`;
 
       try {
         const response = await fetch(
@@ -242,7 +330,7 @@
         const output = data?.candidates?.[0]?.content?.parts?.[0]?.text;
 
         // Save full output (for copy/download)
-        document.getElementById("roadmapText").innerText = output || "⚠️ Could not generate a roadmap.";
+        document.getElementById("roadmapText").innerText = output || "⚠ Could not generate a roadmap.";
 
         // Parse into steps for creative timeline
         const roadmapContainer = document.getElementById("roadmapContainer");
@@ -257,7 +345,7 @@
             roadmapContainer.appendChild(div);
           });
         } else {
-          roadmapContainer.innerHTML = "<p>⚠️ Could not generate a roadmap.</p>";
+          roadmapContainer.innerHTML = "<p>⚠ Could not generate a roadmap.</p>";
         }
 
       } catch (err) {
