@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Career Roadmap</title>
+  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@300;400;700&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --bg: #fefcf8;
+      --text: #2e2a26;
+      --accent: #a47148;
+      --accent-hover: #8b5e3c;
+      --input-bg: rgba(255,255,255,0.9);
+      --input-border: #ddd;
+      --card-bg: rgba(255,255,255,0.85);
+    }
+
+    body.dark {
+      --bg: linear-gradient(180deg, #121212 0%, #1f1f1f 100%);
+      --accent: #4db6ac;
+      --accent-hover: #399089;
+      --text: #eaeaea;
+      --card-bg: rgba(40, 40, 40, 0.8);
+      --card-border: rgba(255, 255, 255, 0.08);
+      --input-bg: rgba(60, 60, 60, 0.9);
+      --input-border: #444;
+    }
+    
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Oswald', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    a { text-decoration: none; color: inherit; }
+
+    nav {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 1rem 1.5rem; position: sticky; top: 0; background: var(--bg);
+      z-index: 50; box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      width: 100%;
+    }
+    .logo { display: flex; align-items: center; gap: 0.75rem; font-weight: bold; font-size: 1.125rem; }
+    .logo-circle {
+      width: 2.5rem; height: 2.5rem; border-radius: 0.5rem;
+      background: var(--accent); color: #fff; display: grid; place-items: center; font-weight: bold;
+    }
+    .nav-links { display: none; gap: 1.5rem; list-style: none; font-weight: 500; }
+    .nav-links li:hover a { color: var(--accent); }
+    .nav-buttons { display: flex; gap: 0.75rem; }
+    .btn-accent { background: var(--accent); color: #fff; border: none; padding: 0.5rem 1rem; border-radius: 0.37rem; cursor: pointer; transition: background 0.3s, transform 0.3s; }
+    .btn-accent:hover { background: var(--accent-hover); transform: scale(1.05); }
+    @media(min-width: 768px){ .nav-links { display: flex; } }
+
+    .header-image-container { width: 100%; height: 350px; overflow: hidden; margin-bottom: 2rem; }
+    .header-image-container img { width: 100%; height: 100%; object-fit: cover; }
+
+    h1 { text-align: center; margin-bottom: 2rem; font-size: 2.6rem; }
+
+    form, #result {
+      width: 100%; max-width: 650px; background: var(--card-bg);
+      backdrop-filter: blur(10px); padding: 2rem; border-radius: 1rem;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.08); margin-bottom: 2rem;
+    }
+    label { display: block; margin-bottom: 1.5rem; font-weight: 600; }
+    select, input[type="text"] {
+      width: 100%; padding: 0.9rem; border: 1px solid var(--input-border);
+      border-radius: 0.5rem; background: var(--input-bg); color: var(--text);
+    }
+    button {
+      margin-top: 1rem; padding: 0.9rem 1.8rem; background: var(--accent);
+      color: white; border: none; border-radius: 0.5rem; font-size: 1rem; cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    button:hover { background: var(--accent-hover); transform: translateY(-3px) scale(1.03); }
+    #loading { text-align: center; display: none; margin: 1rem 0; }
+    .action-buttons { margin-top: 1rem; display: flex; gap: 1rem; }
+    @media (max-width: 640px) { .action-buttons { flex-direction: column; } }
+
+    /* ---- Creative Roadmap Timeline ---- */
+    .roadmap {
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+      margin-top: 1.5rem;
+      position: relative;
+      padding-left: 2rem;
+    }
+    .roadmap::before {
+      content: "";
+      position: absolute;
+      left: 15px;
+      top: 0;
+      bottom: 0;
+      width: 4px;
+      background: var(--accent);
+      border-radius: 2px;
+    }
+    .roadmap-step {
+      background: var(--card-bg);
+      border: 1px solid var(--input-border);
+      border-radius: 1rem;
+      padding: 1.2rem;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+      position: relative;
+      animation: fadeInUp 0.5s ease;
+    }
+    .roadmap-step::before {
+      content: "";
+      position: absolute;
+      left: -28px;
+      top: 20px;
+      width: 15px;
+      height: 15px;
+      background: var(--accent);
+      border-radius: 50%;
+      border: 2px solid white;
+    }
+    .roadmap-step h3 {
+      margin-bottom: 0.5rem;
+      font-size: 1.2rem;
+      color: var(--accent);
+    }
+    .roadmap-step ul {
+      margin: 0.5rem 0 0 1.2rem;
+      padding: 0;
+      list-style: disc;
+    }
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <div class="logo"><div class="logo-circle">CP</div> Career Pathfinder</div>
+    <ul class="nav-links">
+      <li><a href="frontpage.html">Home</a></li>
+      <li><a href="features.html">Features</a></li>
+      <li><a href="#">Projects</a></li>
+      <li><a href="#">Skills</a></li>
+      <li><a href="#">Contact</a></li>
+    </ul>
+    <div class="nav-buttons">
+      <button id="themeBtn" class="btn-accent">Theme</button>
+      <button class="btn-accent"><a href="signup.html">Sign In</a></button>
+    </div>
+  </nav>
+
+  <div class="header-image-container">
+    <img src="https://i.pinimg.com/1200x/62/78/c4/6278c4cf40beae8f48a047102ca585d2.jpg" alt="">
+  </div>
+
+  <h1>Get Your Career Roadmap</h1>
+
+  <form id="roadmapForm">
+    <label>Skill Level
+      <select id="skillLevel" name="skillLevel" required>
+        <option value="">Select skill level</option>
+        <option>Beginner</option>
+        <option>Intermediate</option>
+        <option>Advanced</option>
+      </select>
+    </label>
+
+    <label>Area of Interest
+      <input type="text" id="interest" name="interest" placeholder="e.g., Web Development, AI, Design" required />
+    </label>
+
+    <label>Education Level
+      <select id="education" name="education" required>
+        <option value="">Select education level</option>
+        <option>10th</option>
+        <option>12th</option>
+        <option>Undergraduate</option>
+        <option>Postgraduate</option>
+      </select>
+    </label>
+
+    <button type="submit">Generate Roadmap</button>
+  </form>
+
+  <div id="loading">⏳ Generating roadmap...</div>
+
+  <div id="result">
+    <h2>Career Roadmap</h2>
+    <div id="roadmapContainer" class="roadmap"></div>
+    <p id="roadmapText" style="display:none;"></p>
+    <div class="action-buttons">
+      <button id="copyBtn">📋 Copy</button>
+      <button id="downloadBtn">⬇️ Download PDF</button>
+    </div>
+  </div>
+
+  <!-- jsPDF library -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+  <script>
+    // Theme toggle
+    const themeBtn = document.getElementById("themeBtn");
+    const body = document.body;
+    if(localStorage.getItem("theme") === "dark") body.classList.add("dark");
+    themeBtn.addEventListener("click", () => {
+      body.classList.toggle("dark");
+      localStorage.setItem("theme", body.classList.contains("dark") ? "dark" : "light");
+    });
+
+    // Generate roadmap
+    document.getElementById("roadmapForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      document.getElementById("loading").style.display = "block";
+      document.getElementById("roadmapText").innerText = "";
+      document.getElementById("roadmapContainer").innerHTML = "";
+
+      const skill = document.getElementById("skillLevel").value;
+      const interest = document.getElementById("interest").value;
+      const education = document.getElementById("education").value;
+
+      const prompt = `Create a detailed career roadmap for a ${skill} level student interested in ${interest} who is currently at ${education} level. Include step-by-step milestones, skills to learn, and 2-3 project ideas at each stage.`;
+
+      try {
+        const response = await fetch(
+          "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=AIzaSyCrqFSmGcylOJsc2msPw03rWYFs0ZckECA",
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              contents: [{ parts: [{ text: prompt }] }],
+            }),
+          }
+        );
+        const data = await response.json();
+        const output = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+
+        // Save full output (for copy/download)
+        document.getElementById("roadmapText").innerText = output || "⚠️ Could not generate a roadmap.";
+
+        // Parse into steps for creative timeline
+        const roadmapContainer = document.getElementById("roadmapContainer");
+        roadmapContainer.innerHTML = "";
+
+        if (output) {
+          const steps = output.split(/\d+[\.\)]/).filter(s => s.trim() !== "");
+          steps.forEach((step, i) => {
+            const div = document.createElement("div");
+            div.className = "roadmap-step";
+            div.innerHTML = `<h3>Step ${i+1}</h3><p>${step.trim()}</p>`;
+            roadmapContainer.appendChild(div);
+          });
+        } else {
+          roadmapContainer.innerHTML = "<p>⚠️ Could not generate a roadmap.</p>";
+        }
+
+      } catch (err) {
+        console.error("Error:", err);
+        document.getElementById("roadmapText").innerText = "❌ Error while generating roadmap.";
+      } finally {
+        document.getElementById("loading").style.display = "none";
+      }
+    });
+
+    // Copy button
+    document.getElementById("copyBtn").addEventListener("click", () => {
+      const text = document.getElementById("roadmapText").innerText;
+      navigator.clipboard.writeText(text).then(() => {
+        alert("✅ Roadmap copied to clipboard!");
+      });
+    });
+
+    // Download as PDF button
+    document.getElementById("downloadBtn").addEventListener("click", () => {
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+      const text = document.getElementById("roadmapText").innerText;
+      const lines = doc.splitTextToSize(text, 180);
+      doc.text(lines, 15, 20);
+      doc.save("career-roadmap.pdf");
+    });
+  </script>
+</body>
+</html>

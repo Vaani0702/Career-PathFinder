@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sign Up - Career Pathfinder</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&family=Roboto+Condensed:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+
+  <style>
+    * {margin: 0; padding: 0; box-sizing: border-box;}
+    body {
+      font-family: "Oswald", sans-serif;
+      background: #ffffff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    a {color: #000; text-decoration: underline;}
+    .main-container {
+      display: flex;
+      background: black;
+      border-radius: 12px;
+      overflow: hidden;
+      max-width: 1000px;
+      width: 95%;
+    }
+    .left-panel {
+      background: #121212; color: white; padding: 60px 40px;
+      flex: 1; display: flex; flex-direction: column; justify-content: center;
+    }
+    .left-panel h1 {font-size: 32px; margin-bottom: 20px;}
+    .right-panel {flex: 1; padding: 40px 30px; background: #fff;}
+    .right-panel h2 {font-size: 28px; margin-bottom: 20px; text-align: center;}
+    .form {display: flex; flex-direction: column;}
+    .input-group {display: flex; gap: 10px; margin-bottom: 15px;}
+    .form input {padding: 12px; border: 1px solid #ccc; border-radius: 6px; margin-bottom: 12px;}
+    .form label {font-size: 13px; margin: 8px 0; display: flex; gap: 8px;}
+    .info {font-size: 12px; color: #888; margin-top: -8px; margin-bottom: 10px;}
+    .btn-primary {
+      background: #000; color: #fff; border: none; padding: 12px;
+      border-radius: 6px; font-weight: bold; cursor: pointer; margin-top: 15px;
+    }
+    .btn-primary:hover {background: #a6c1dd;}
+    .btn-secondary {
+      background: #343030; color: #fff; border: 1px solid #ccc;
+      padding: 12px; border-radius: 6px; cursor: pointer; font-weight: bold;
+      margin-top: 15px; display: flex; align-items: center; justify-content: center;
+    }
+    .btn-secondary img {width: 18px; margin-right: 8px;}
+    .small-text {margin-top: 10px; font-size: 13px; text-align: center;}
+  </style>
+</head>
+<body>
+  <div class="main-container">
+    <div class="left-panel">
+      <h1>Questioning what career path to choose?</h1>
+      <p>Find guided road maps, career counselling and much more...</p>
+    </div>
+
+    <div class="right-panel">
+      <h2>Sign up now</h2>
+      <form id="signupForm" class="form">
+        <div class="input-group">
+          <input type="text" id="firstName" placeholder="First name" required />
+          <input type="text" id="lastName" placeholder="Last name" required />
+        </div>
+        <input type="email" id="signupEmail" placeholder="Email address" required />
+        <input type="tel" id="phone" placeholder="Phone number" required />
+        <input type="password" id="signupPassword" placeholder="Password" required />
+
+        <p class="info">Use 8 or more characters with a mix of letters, numbers & symbols</p>
+
+        <label><input type="checkbox" checked /> I agree to <a href="#">Terms</a> & <a href="#">Privacy</a></label>
+
+        <button type="submit" class="btn-primary">Sign up</button>
+      </form>
+
+      <button id="googleSignupBtn" class="btn-secondary">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" alt="Google">
+        Sign up with Google
+      </button>
+
+      <p class="small-text">Already have an account? <a href="login.html">Login</a></p>
+    </div>
+  </div>
+
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/10.5.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.5.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.5.0/firebase-database-compat.js"></script>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyBBejnn2RhXuyUUBeK0ExRlFLf2imiKIS4",
+      authDomain: "career-pathfinder-991f3.firebaseapp.com",
+      projectId: "career-pathfinder-991f3",
+      storageBucket: "career-pathfinder-991f3.appspot.com",
+      messagingSenderId: "618044527134",
+      appId: "1:618044527134:web:37edfac238160ce2ffd40f",
+      measurementId: "G-F9REXZRDQG",
+      databaseURL: "https://career-pathfinder-991f3-default-rtdb.firebaseio.com"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const database = firebase.database();
+
+    // Email/Password signup
+    document.getElementById("signupForm").addEventListener("submit", function(e) {
+      e.preventDefault();
+      const firstName = document.getElementById("firstName").value;
+      const lastName = document.getElementById("lastName").value;
+      const email = document.getElementById("signupEmail").value;
+      const phone = document.getElementById("phone").value;
+      const password = document.getElementById("signupPassword").value;
+
+      auth.createUserWithEmailAndPassword(email, password)
+        .then((userCredential) => {
+          const user = userCredential.user;
+          database.ref('users/' + user.uid).set({
+            firstName, lastName, email, phone,
+            createdAt: new Date().toISOString()
+          });
+          alert("Signup successful ✅");
+          window.location.href = "dashboard.html"; // redirect
+        })
+        .catch((error) => alert(error.message));
+    });
+
+    // Google signup
+    document.getElementById("googleSignupBtn").addEventListener("click", function() {
+      const provider = new firebase.auth.GoogleAuthProvider();
+      auth.signInWithPopup(provider)
+        .then((result) => {
+          const user = result.user;
+          database.ref('users/' + user.uid).set({
+            displayName: user.displayName,
+            email: user.email,
+            phone: user.phoneNumber || "N/A",
+            createdAt: new Date().toISOString(),
+            provider: "google"
+          });
+          alert("Google signup successful ✅");
+          window.location.href = "dashboard.html";
+        })
+        .catch((error) => alert(error.message));
+    });
+  </script>
+</body>
+</html>
